@@ -10,7 +10,10 @@ import (
 type MongoDbSession *mgo.Session
 
 // DBSession : this will be exposed to other packages to access mongo db session
-var DBSession MongoDbSession
+var DBSession *mgo.Session
+
+//DBConn : db to connect to collections
+var DBConn *mgo.Database
 
 //Init : Perform the following tasks
 // Set up a connection with mongo server
@@ -24,8 +27,14 @@ func Init() (MongoDbSession, error) {
 	} else {
 		fmt.Println("Connected to db")
 		DBSession = session
+		DBConn = DBSession.DB("gmart_prod")
 	}
-
 	return DBSession, err
 
+}
+
+//Destroy : Destroy db connection
+func Destroy() {
+	fmt.Println("Destroying Db Connection...")
+	DBSession.Close()
 }
